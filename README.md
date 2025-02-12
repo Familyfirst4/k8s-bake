@@ -1,6 +1,6 @@
 # Kubernetes bake action
 
-Use this action to bake manifest file to be used for deployments using helm, kustomize or kompose.
+Use this action to bake manifest files to be used for deployments using helm, kustomize or kompose.
 
 Sets output variable 'manifestsBundle' which contains the location of the manifest bundles created by bake action.
 
@@ -9,7 +9,7 @@ Sets output variable 'manifestsBundle' which contains the location of the manife
 #### Bake using helm
 
 ```yaml
-- uses: azure/k8s-bake@v2.2
+- uses: azure/k8s-bake@v3
    with:
       renderEngine: 'helm'
       helmChart: './aks-helloworld/'
@@ -26,7 +26,7 @@ Sets output variable 'manifestsBundle' which contains the location of the manife
 #### Bake using Kompose
 
 ```yaml
-- uses: azure/k8s-bake@v2.2
+- uses: azure/k8s-bake@v3
   with:
      renderEngine: 'kompose'
      dockerComposeFile: './docker-compose.yml'
@@ -36,7 +36,7 @@ Sets output variable 'manifestsBundle' which contains the location of the manife
 #### Bake using Kubernetes Kustomize
 
 ```yaml
-- uses: azure/k8s-bake@v2.2
+- uses: azure/k8s-bake@v3
   with:
      renderEngine: 'kustomize'
      kustomizationPath: './kustomizeexample/'
@@ -69,18 +69,18 @@ jobs:
               docker build . -t contoso.azurecr.io/k8sdemo:${{ github.sha }}
               docker push contoso.azurecr.io/k8sdemo:${{ github.sha }}
 
-         - uses: Azure/k8s-set-context@v1
+         - uses: Azure/k8s-set-context@v3
            with:
               kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-         - uses: Azure/k8s-create-secret@v1
+         - uses: Azure/k8s-create-secret@v4
            with:
               container-registry-url: contoso.azurecr.io
               container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
               container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
               secret-name: demo-k8s-secret
 
-         - uses: azure/k8s-bake@v2.2
+         - uses: azure/k8s-bake@v3
            with:
               renderEngine: 'helm'
               helmChart: './aks-helloworld/'
@@ -90,7 +90,7 @@ jobs:
               helm-version: 'latest'
            id: bake
 
-         - uses: Azure/k8s-deploy@v1
+         - uses: Azure/k8s-deploy@v4
            with:
               manifests: ${{ steps.bake.outputs.manifestsBundle }}
               images: |
@@ -112,3 +112,7 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Support
+
+k8s-bake is an open source project that is [**not** covered by the Microsoft Azure support policy](https://support.microsoft.com/en-us/help/2941892/support-for-linux-and-open-source-technology-in-azure). [Please search open issues here](https://github.com/Azure/k8s-bake/issues), and if your issue isn't already represented please [open a new one](https://github.com/Azure/k8s-bake/issues/new/choose). The project maintainers will respond to the best of their abilities.
